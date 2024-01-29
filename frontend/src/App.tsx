@@ -15,26 +15,38 @@ function App() {
   },[messages])
 
   const handleSendMessage = () => {
-    socket.emit('message', inputMessage)
-    setInputMessage('')
+    if(inputMessage !== "") {
+      socket.emit('message', inputMessage)
+      setInputMessage('')
+    }
+  }
+
+  const handleEnter = (e) => {
+    if(e.keyCode == 13 && !e.shiftKey) {
+      handleSendMessage()
+    }
   }
 
   return (  
-    <>
-      <div>
-        <ul>
+      <div className='flex flex-col justify-between h-full'>
+        <div className='flex flex-col h-max max-h-full overflow-y-auto'>
           {messages.map((msg, index) => (
-            <li key={index}>{msg}</li>
+            <div
+              className='h-6 text-left'
+              key={index}>{msg}</div>
           ))}
-        </ul>
-        <input
-          type="text"
-          value={inputMessage}
-          onChange={(e) => setInputMessage(e.target.value)}
-        />
-        <button onClick={handleSendMessage}>Send</button>
+        </div>
+        <div>
+          <input
+            type="text"
+            value={inputMessage}
+            onChange={(e) => setInputMessage(e.target.value)}
+            className='bg-slate-950'
+            onKeyDown={handleEnter}
+          />
+          <button onClick={handleSendMessage}>Send</button>
+        </div>
       </div>
-    </>
   )
 }
 
