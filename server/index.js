@@ -20,9 +20,15 @@ io.on('connection', (socket) => {
     console.log('User disconnected')
   })
 
-  socket.on('message', (msg) => {
-    console.log(`Message: ${msg}`)
-    io.emit(`message`, msg)
+  socket.on('join', (channel) => {
+    console.log(`${socket.id} joined the channel: ${channel}`);
+    socket.join(channel); // Join the socket.io room corresponding to the channel
+  });
+
+  socket.on('message', (data) => {
+    const { message, room } = data
+    console.log(`Message: ${message}`)
+    io.in(room).emit(`message`, message)
   })
 
 })
