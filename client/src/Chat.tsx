@@ -30,8 +30,13 @@ function Chat() {
 
   const handleSendMessage = () => {
     if(inputMessage !== "") {
-      socket.emit('message', {message: inputMessage, room: username})
-      setInputMessage('')
+      if(inputMessage.length < 500) {
+        socket.emit('message', {message: inputMessage, room: username})
+        setInputMessage('')
+      }
+      else {
+        alert("Message too long")
+      }
     }
   }
 
@@ -44,22 +49,22 @@ function Chat() {
   return (  
       <div className='flex flex-col justify-between h-full'>
         <div
-          className='flex flex-col h-max max-h-full overflow-y-auto'
+          className='h-max max-h-full overflow-y-auto'
         >
           {messages.map((msg, index) => (
             <div
-              className='h-10 p-2 rounded text-left hover:bg-gray-600'
+              className='min-h-10 p-2 rounded text-left hover:bg-gray-600'
               key={index} ref={lastMessageRef}>
               <span>{msg.user}: </span>
-              <span>{msg.text}</span>  
+              <span className='text-wrap break-all'>{msg.text}</span>  
             </div>
           ))}
         </div>
-        <div>
+        <div className='flex justify-between'>
           <textarea
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
-            className='bg-slate-950 resize-none'
+            className='bg-slate-950 text-wrap w-full min-h-5 resize-none'
             onKeyDown={handleEnter}
           />
           <button onClick={handleSendMessage}>Send</button>
