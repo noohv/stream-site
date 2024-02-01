@@ -1,7 +1,14 @@
 import express from 'express';
-import { createServer } from 'node:http';
+import { createServer, request } from 'node:http';
 import { Server } from 'socket.io';
 import cors from 'cors';
+import { createClient } from '@supabase/supabase-js'
+import 'dotenv/config'
+import bodyParser from 'body-parser';
+
+const supabaseUrl = 'https://rsyjptimymqowkppqmzn.supabase.co'
+const supabaseKey = process.env.SUPABASE_KEY
+const supabase = createClient(supabaseUrl, supabaseKey)
 
 const app = express();
 const server = createServer(app);
@@ -12,6 +19,8 @@ const io = new Server(server, {
 });
 
 app.use(cors())
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 io.on('connection', (socket) => {
 	console.log("User joined")
@@ -33,7 +42,28 @@ io.on('connection', (socket) => {
 
 })
 
+app.post('/register', async (req, res) => {
+  const userData = req.body
+  
+  const { data, error } = await supabase.auth.signUp(
+    {
+      email: userData.email,
+      password: userData.password,
+      options: {
+        data: {
+          username: userData.username,
+        }
+      }
+    }
+  )
+
+  console.log(userData)
+  res.status(201).send('amogus')
+
+})
+
 const PORT = process.env.PORT || 3000
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`)
 })
+
