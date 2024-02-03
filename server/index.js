@@ -1,6 +1,7 @@
 import express from 'express';
 import { createServer, request } from 'node:http';
 import { Server } from 'socket.io';
+import api from "./api/index.js"
 import cors from 'cors';
 import { createClient } from '@supabase/supabase-js'
 import 'dotenv/config'
@@ -21,6 +22,7 @@ const io = new Server(server, {
 app.use(cors())
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use("/api/v1", api)
 
 io.on('connection', (socket) => {
 	console.log("User joined")
@@ -42,25 +44,6 @@ io.on('connection', (socket) => {
 
 })
 
-app.post('/register', async (req, res) => {
-  const userData = req.body
-  
-  const { data, error } = await supabase.auth.signUp(
-    {
-      email: userData.email,
-      password: userData.password,
-      options: {
-        data: {
-          username: userData.username,
-        }
-      }
-    }
-  )
-
-  console.log(userData)
-  res.status(201).send('amogus')
-
-})
 
 const PORT = process.env.PORT || 3000
 server.listen(PORT, () => {

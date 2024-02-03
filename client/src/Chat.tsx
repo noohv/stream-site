@@ -5,11 +5,6 @@ import { useParams } from 'react-router-dom'
 
 const socket = io('http://localhost:3000')
 
-interface Message {
-  user: string
-  text: string
-}
-
 function Chat() {
   const [messages, setMessages] = useState<Message[]>([])
   const [inputMessage, setInputMessage] = useState('')
@@ -29,7 +24,7 @@ function Chat() {
   },[messages])
 
   const handleSendMessage = () => {
-    if(inputMessage !== "") {
+    if(inputMessage.trim() !== "") {
       if(inputMessage.length < 500) {
         socket.emit('message', {message: inputMessage, room: username})
         setInputMessage('')

@@ -1,12 +1,6 @@
 import { ChangeEvent, FormEvent, useState } from 'react'
 import axios from 'axios'
 
-interface User {
-  username: string
-  email: string
-	password: string
-}
-
 function Register() {
 	const [data, setData] = useState<User>({
 		username: '',
@@ -16,7 +10,7 @@ function Register() {
 
 	const handleClick = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
-		axios.post('http://localhost:3000/register', data)
+		axios.post('http://localhost:3000/api/v1/auth/register', data)
 			.then(response => console.log(response))
 			.catch(error => console.log(error))
   }
@@ -29,21 +23,26 @@ function Register() {
 	}
 
 	return (
-		<div>
-			<form onSubmit={handleClick}>
-				<input 
+		<div className='w-52'>
+			<form
+				className='flex flex-col gap-5'
+				onSubmit={handleClick}>
+				<input
+					className='bg-gray-600'
 					type="text" 
 					name="username" 
 					id="username"
 					value={data.username}
 					onChange={handleChange} />
 				<input
+					className='bg-gray-600'
 					type="email" 
 					name="email" 
 					id="email" 
 					value={data.email}
 					onChange={handleChange} />
-				<input 
+				<input
+					className='bg-gray-600'
 					type="password" 
 					name="password" 
 					id="password" 
